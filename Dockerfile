@@ -12,14 +12,14 @@ WORKDIR /vernemq
 ENV DOCKER_VERNEMQ_KUBERNETES_LABEL_SELECTOR="app=vernemq" \
     DOCKER_VERNEMQ_LOG__CONSOLE=console \
     PATH="/vernemq/bin:$PATH" \
-    VERNEMQ_VERSION="2.1.1"
+    VERNEMQ_VERSION="v2.1.3-rc1"
 COPY --chown=10000:10000 bin/vernemq.sh /usr/sbin/start_vernemq
 COPY --chown=10000:10000 bin/join_cluster.sh /usr/sbin/join_cluster
 COPY --chown=10000:10000 files/vm.args /vernemq/etc/vm.args
 
 # Note that the following copies a binary package under EULA (requiring a paid subscription).
 RUN ARCH=$(uname -m | sed -e 's/aarch64/arm64/') && \
-    curl -L https://github.com/vernemq/vernemq/releases/download/$VERNEMQ_VERSION/vernemq-$VERNEMQ_VERSION.bookworm.$ARCH.tar.gz -o /tmp/vernemq-$VERNEMQ_VERSION.bookworm.tar.gz && \
+    curl -L https://github.com/dometec/vernemq/releases/download/$VERNEMQ_VERSION/vernemq-$VERNEMQ_VERSION.bookworm.$ARCH.tar.gz -o /tmp/vernemq-$VERNEMQ_VERSION.bookworm.tar.gz && \
     tar -xzvf /tmp/vernemq-$VERNEMQ_VERSION.bookworm.tar.gz && \
     rm /tmp/vernemq-$VERNEMQ_VERSION.bookworm.tar.gz && \
     chown -R 10000:10000 /vernemq && \
@@ -40,7 +40,7 @@ EXPOSE 1883 8883 8080 44053 4369 8888 \
        9100 9101 9102 9103 9104 9105 9106 9107 9108 9109
 
 
-VOLUME ["/vernemq/log", "/vernemq/data", "/vernemq/etc"]
+# VOLUME ["/vernemq/log", "/vernemq/data", "/vernemq/etc"]
 
 HEALTHCHECK CMD vernemq ping | grep -q pong
 
