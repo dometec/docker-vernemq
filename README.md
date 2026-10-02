@@ -54,6 +54,16 @@ This allows a newly started container to automatically join a VerneMQ cluster. A
 
 (Note, you can find the IP of a docker container using `docker inspect <containername/cid> | grep \"IPAddress\"`).
 
+#### Building for ARM64
+
+The `Dockerfile` downloads the prebuilt VerneMQ binary package, which is not published for arm64 in every release (e.g. 2.2.x only ships x86_64). In that case use `Dockerfile.source`, a multi-stage build that compiles VerneMQ from the release tag:
+
+    docker buildx build --platform linux/arm64 -f Dockerfile.source -t vernemq:2.2.1-arm64 --load .
+
+Use `--build-arg VERNEMQ_VERSION=<tag>` to build a different version. To build a multi-arch image (note that building under QEMU emulation is slow, a native ARM runner is recommended):
+
+    docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile.source -t <repo>/vernemq:<tag> --push .
+
 
 ### 4. Automated clustering on Kubernetes without helm
 
